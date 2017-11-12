@@ -20,8 +20,9 @@ env:
 install: true
 
 stages:
-  - BUILD & PUSH
-  - PULL & TEST
+  - name: BUILD & PUSH
+  - name: PULL & TEST
+    if: branch = master AND type = pull
 
 jobs:
   include:
