@@ -16,55 +16,56 @@ env:
     - DOCKER_IMAGE_NAME=travis-cli
     - DOCKER_ORGANIZATION=beeglercorp
     - DOCKER_PUBLIC_IMAGE_NAME=$DOCKER_ORGANIZATION/$DOCKER_IMAGE_NAME
+    - IMAGE_SIZE_THRESHOLD=35
 
 install: true
 
 stages:
-  - name: BUILD & PUSH
-  - name: PULL & TEST
+  - name: Build
+  - name: Test Pull
     if: branch = master AND type = pull
 
 jobs:
   include:
-    - stage: BUILD & PUSH
+    - stage: Build
       env: TAG=latest
       script:
         - docker build --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t 35
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t $IMAGE_SIZE_THRESHOLD
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
             docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
-    - stage: BUILD & PUSH
+    - stage: Build
       env: TAG=alpine-edge
       script:
         - docker build --build-arg ALPINE_VERSION=edge --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t 35
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t $IMAGE_SIZE_THRESHOLD
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
             docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
-    - stage: BUILD & PUSH
+    - stage: Build
       env: TAG=alpine-3.5
       script:
         - docker build --build-arg ALPINE_VERSION=3.5 --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t 35
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t $IMAGE_SIZE_THRESHOLD
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
             docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
-    - stage: PULL & TEST
+    - stage: Test Pull
       env: TAG=latest
       script:
-        - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
-    - stage: PULL & TEST
+        - ./sh/ci/test.sh
+    - stage: Test Pull
       env: TAG=alpine-edge
       script:
-        - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
-    - stage: PULL & TEST
+        - ./sh/ci/test.sh
+    - stage: Test Pull
       env: TAG=alpine-3.5
       script:
-        - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
+        - ./sh/ci/test.sh
