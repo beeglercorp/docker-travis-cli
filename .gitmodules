@@ -1,0 +1,4 @@
+[submodule "docker-util"]
+	path = "docker-util"
+	shallow = true
+	url = https://github.com/beeglercorp/docker-util.git

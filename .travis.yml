@@ -28,4 +28,4 @@ jobs:
     - stage: build
       script:
         - docker build --tag image --compress --force-rm --squash .
-        - ./test-docker-image-size.sh -i image -t 35
+        - ./docker-util/sh/test-image-size.sh -i image -t 35
