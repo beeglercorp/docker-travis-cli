@@ -11,6 +11,16 @@ before_install:
   - sudo dockerd --experimental &
   - docker version
 
+env:
+  global:
+    # DOCKER_USERNAME
+    - secure: "i3/W4+lsOt5BBDGNrzKLvAy2Ne19SgTDGotRk4tgNBjUBdHOTaAgeD2YsePx75Dn/TMS//Okfu7TgrQqsRzFEZS2BEQLb+sQLTvqeC5VEJusPyPpYFh9o8ePzATa0TClRLQHVmRiHsjej51DQKuShwDhM0w/J1LuFw3++SInc1+PX+f8t8AjbgXJus1MklCPh8fG1KRVx5N+oJnU4kDnB/VDxX8GtBIWHWj6IF3keeu+RRrq7d0Pi8ZwBzYhBz7wkzfLqSrKYGVsdEd8A5KOWQtydL1eRlJY5vzL2Dnye5lduJYlgbhVswYOOS19/6vZF0kWM3DOKmdcQgp0BofQoJXjCSfl1YruLwVY0tLGZngA0n0CUf3Xaby9rl7sau9b7Y9gUyP79u4XBixd1yd1KssvDSBGSqEaTu0jI2p6oD5SJi2R/1s/oa5Xc7rCWlQnK53hifn7o7e49IQiOx0hWZExIHqhzWa2UHyCJKZuVth0Wd+jyAeRfopLtpPh1xUQ9yI0cxtAIvddhJ7nDUMSuhO6Ipf3scf9PW6ZZS7ymvJnW9RCydw5N7Lrdb8wNRwS6NuwA3erDZ1WGO8p3FlxHNd89aZo8kEy6HS4VKE21qI1Aac/KBfK3Jxt8KE8/mwcHbr3ZTDTyqBxA/ROuASNz1n2wNnZTwqZvKRGohVOdzM="
+    # DOCKER_PASSWORD
+    - secure: "H4BHF0cKhkFoQ5A3gL5SvIMfKgGAt1DtJoG98IpuCKBWXVrqPOZZd5U8ldGFnSHF3zee7/vu6R/hmIjUE04BVnszYk/MKQMxENEw+ZfSu9uYzEMo/kmd2rjvrG8Tf13VaP4nQ/rrzqPSH5oma/o35ohcphpBF/xBD7mhjgEzeKWygnrEdivwGD6hXvxI0MsouK4fO1DR8gcxG2F5ahBNqwl+yQlDzbb3HGVgH8ple8DRLPuNYvhlV6SpobJsUyAc8ZbYa7aaD8iKE714csbUA9pds3UZbhhEw+UJVYOQNoRSov41oGL8vAhO1ky8qcQll4OzEXcCu3QEV9y7fAWOwDdrMS02TWQuoXhZ7oc3RiwhPdbogFmq0WSSYzwd6+YD08axEykDC1JixUoftrvtpG05MpNwTmpXY/VSOL/uV5k2cktebijKSIz24lkvmQQagt6Z8ZVQjPZQVMThWszXKlPpULZApjraKxavzfuQS7EBCFgXTstdl4nMlUCS/u3gf34mldeDK3v5obV83Vbs0G7O3/uB/gTv1EX3naTG/S7GOYO52reEAFZ/RDF7ppFC1Jz+pa6xvYwz0ald/vDWxF5tNs8QL3vP8gKiDBx0bJY/Gfc8mDBA5bjPBfJ4S984eq+4Pd4/EKS6FD4Bp4xyf/20ZNh9zn/JP4wECegfkSU="
+    - DOCKER_IMAGE_NAME=travis-cli
+    - DOCKER_ORGANIZATION=beeglercorp
+    - DOCKER_TAG=$DOCKER_ORGANIZATION/$DOCKER_IMAGE_NAME
+
 install: true
 
 stages:
@@ -21,5 +31,6 @@ jobs:
   include:
     - stage: build
       script:
-        - docker build --tag image --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i image -t 35
+        - docker build --tag $DOCKER_TAG --compress --force-rm --squash .
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
