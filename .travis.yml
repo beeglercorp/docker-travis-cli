@@ -23,7 +23,7 @@ install: true
 stages:
   - name: Build
   - name: Test Pull
-    if: branch = master AND type = pull
+    if: branch = master AND type = push
 
 jobs:
   include:
