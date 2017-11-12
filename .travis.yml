@@ -33,9 +33,7 @@ jobs:
         - docker build --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
         - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t $IMAGE_SIZE_THRESHOLD
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
-            docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
-            docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
-            docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
+            ./docker-util/sh/push-image.sh -i $DOCKER_IMAGE_NAME -n $DOCKER_PUBLIC_IMAGE_NAME -p $DOCKER_PASSWORD -t $TAG -u $DOCKER_USERNAME
           fi
     - stage: Build
       env: TAG=alpine-edge
@@ -43,9 +41,7 @@ jobs:
         - docker build --build-arg ALPINE_VERSION=edge --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
         - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t $IMAGE_SIZE_THRESHOLD
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
-            docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
-            docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
-            docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
+            ./docker-util/sh/push-image.sh -i $DOCKER_IMAGE_NAME -n $DOCKER_PUBLIC_IMAGE_NAME -p $DOCKER_PASSWORD -t $TAG -u $DOCKER_USERNAME
           fi
     - stage: Build
       env: TAG=alpine-3.5
@@ -53,9 +49,7 @@ jobs:
         - docker build --build-arg ALPINE_VERSION=3.5 --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
         - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t $IMAGE_SIZE_THRESHOLD
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
-            docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
-            docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
-            docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
+            ./docker-util/sh/push-image.sh -i $DOCKER_IMAGE_NAME -n $DOCKER_PUBLIC_IMAGE_NAME -p $DOCKER_PASSWORD -t $TAG -u $DOCKER_USERNAME
           fi
     - stage: Test Pull
       env: TAG=latest
