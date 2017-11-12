@@ -20,12 +20,12 @@ env:
 install: true
 
 stages:
-  - build
-  - test
+  - BUILD & PUSH
+  - PULL & TEST
 
 jobs:
   include:
-    - stage: build
+    - stage: BUILD & PUSH
       env: TAG=latest
       script:
         - docker build --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
@@ -35,7 +35,7 @@ jobs:
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
             docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
-    - stage: build
+    - stage: BUILD & PUSH
       env: TAG=alpine-edge
       script:
         - docker build --build-arg ALPINE_VERSION=edge --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
@@ -45,7 +45,7 @@ jobs:
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
             docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
-    - stage: build
+    - stage: BUILD & PUSH
       env: TAG=alpine-3.5
       script:
         - docker build --build-arg ALPINE_VERSION=3.5 --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
@@ -55,15 +55,15 @@ jobs:
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
             docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
-    - stage: test
+    - stage: PULL & TEST
       env: TAG=latest
       script:
         - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
-    - stage: test
+    - stage: PULL & TEST
       env: TAG=alpine-edge
       script:
         - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
-    - stage: test
+    - stage: PULL & TEST
       env: TAG=alpine-3.5
       script:
         - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
