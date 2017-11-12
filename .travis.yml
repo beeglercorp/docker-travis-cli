@@ -26,6 +26,7 @@ stages:
 jobs:
   include:
     - stage: build
+      env: alpine=latest
       script:
         - docker build --tag $DOCKER_TAG --compress --force-rm --squash .
         - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
@@ -33,6 +34,33 @@ jobs:
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
             docker push $DOCKER_TAG;
           fi
-    - stage: test
+    - stage: build
+      env: alpine=edge
       script:
-        - docker run --rm $DOCKER_TAG --version
+        - docker build --build-arg ALPINE_VERSION=edge --tag $DOCKER_TAG --compress --force-rm --squash .
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
+        - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
+            docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
+            docker push $DOCKER_TAG:alpine-edge;
+          fi
+    - stage: build
+      env: alpine=3.5
+      script:
+        - docker build --build-arg ALPINE_VERSION=3.5 --tag $DOCKER_TAG --compress --force-rm --squash .
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
+        - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
+            docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
+            docker push $DOCKER_TAG:alpine-3.5;
+          fi
+    - stage: test
+      env: alpine=latest
+      script:
+        - docker run --rm $DOCKER_TAG:latest --version
+    - stage: test
+      env: alpine=edge
+      script:
+        - docker run --rm $DOCKER_TAG:latest --version
+    - stage: test
+      env: alpine=3.5
+      script:
+        - docker run --rm $DOCKER_TAG:latest --version
