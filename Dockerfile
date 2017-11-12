@@ -1,4 +1,6 @@
-FROM alpine:3.6
+ARG ALPINE_VERSION=latest
+FROM alpine:${ALPINE_VERSION}
+
 
 RUN apk update
 RUN apk add --no-cache --virtual .build-dependencies \
