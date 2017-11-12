@@ -15,7 +15,7 @@ env:
   global:
     - DOCKER_IMAGE_NAME=travis-cli
     - DOCKER_ORGANIZATION=beeglercorp
-    - DOCKER_TAG=$DOCKER_ORGANIZATION/$DOCKER_IMAGE_NAME
+    - DOCKER_PUBLIC_IMAGE_NAME=$DOCKER_ORGANIZATION/$DOCKER_IMAGE_NAME
 
 install: true
 
@@ -26,41 +26,44 @@ stages:
 jobs:
   include:
     - stage: build
-      env: alpine=latest
+      env: TAG=latest
       script:
-        - docker build --tag $DOCKER_TAG --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
+        - docker build --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t 35
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
-            docker push $DOCKER_TAG;
+            docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
+            docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
     - stage: build
-      env: alpine=edge
+      env: TAG=alpine-edge
       script:
-        - docker build --build-arg ALPINE_VERSION=edge --tag $DOCKER_TAG --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
+        - docker build --build-arg ALPINE_VERSION=edge --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t 35
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
-            docker push $DOCKER_TAG:alpine-edge;
+            docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
+            docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
     - stage: build
-      env: alpine=3.5
+      env: TAG=alpine-3.5
       script:
-        - docker build --build-arg ALPINE_VERSION=3.5 --tag $DOCKER_TAG --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
+        - docker build --build-arg ALPINE_VERSION=3.5 --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t 35
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
-            docker push $DOCKER_TAG:alpine-3.5;
+            docker tag $DOCKER_IMAGE_NAME $DOCKER_PUBLIC_IMAGE_NAME:$TAG
+            docker push $DOCKER_PUBLIC_IMAGE_NAME:$TAG;
           fi
     - stage: test
-      env: alpine=latest
+      env: TAG=latest
       script:
-        - docker run --rm $DOCKER_TAG:latest --version
+        - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
     - stage: test
-      env: alpine=edge
+      env: TAG=alpine-edge
       script:
-        - docker run --rm $DOCKER_TAG:latest --version
+        - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
     - stage: test
-      env: alpine=3.5
+      env: TAG=alpine-3.5
       script:
-        - docker run --rm $DOCKER_TAG:latest --version
+        - docker run --rm $DOCKER_PUBLIC_IMAGE_NAME:$TAG --version
