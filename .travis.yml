@@ -31,4 +31,5 @@ jobs:
         - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
+            docker push DOCKER_TAG;
           fi
