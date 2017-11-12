@@ -27,10 +27,12 @@ jobs:
   include:
     - stage: build
       script:
-        - docker build --tag $DOCKER_TAG --compress --force-rm --squash .
-        - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
+        - docker pull $DOCKER_TAG
+        - docker build --cache-from $DOCKER_TAG --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
+        - ./docker-util/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t 35
         - if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_PULL_REQUEST == "false" ]; then
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
+            docker tag $DOCKER_IMAGE_NAME $DOCKER_TAG
             docker push $DOCKER_TAG;
           fi
     - stage: test
