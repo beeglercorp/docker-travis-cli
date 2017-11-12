@@ -33,4 +33,6 @@ jobs:
       script:
         - docker build --tag $DOCKER_TAG --compress --force-rm --squash .
         - ./docker-util/sh/test-image-size.sh -i $DOCKER_TAG -t 35
-        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - if [ "$TRAVIS_BRANCH" == "master" ]; then
+            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+          fi
