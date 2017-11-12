@@ -13,10 +13,13 @@ before_install:
 
 install: true
 
+nvm:
+  # skip the default nvm.install step since we build everything in Docker
+  install: true
+
 stages:
   - build
   - test
-
 
 jobs:
   include:
