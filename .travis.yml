@@ -33,3 +33,6 @@ jobs:
             docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
             docker push $DOCKER_TAG;
           fi
+    - stage: test
+      script:
+        - docker run --rm $DOCKER_TAG --version
