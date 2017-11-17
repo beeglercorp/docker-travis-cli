@@ -7,7 +7,7 @@ set -ev
 
 # @see https://stackoverflow.com/a/246128
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOCKER_UTIL_PATH=../../docker-util
+DOCKER_UTIL_PATH=$DIR/../../docker-util
 
 
 docker build --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
