@@ -10,5 +10,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DOCKER_UTIL_PATH=$DIR/../../docker-util
 
 
+
 docker build --build-arg ALPINE_VERSION=$ALPINE_VERSION --tag $DOCKER_IMAGE_NAME --compress --force-rm --squash .
 $DOCKER_UTIL_PATH/sh/test-image-size.sh -i $DOCKER_IMAGE_NAME -t $IMAGE_SIZE_THRESHOLD
