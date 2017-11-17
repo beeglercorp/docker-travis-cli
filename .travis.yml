@@ -25,16 +25,19 @@ jobs:
   include:
     - stage: Build
       env:
+        - ALPINE_VERSION=latest
         - TAG=latest
       script:
         - ./sh/ci/build.sh
     - stage: Build
       env:
-        - TAG=alpine-edge
+        - ALPINE_VERSION=edge
+        - TAG=alpine-$ALPINE_VERSION
       script:
         - ./sh/ci/build.sh
     - stage: Build
       env:
-        - TAG=alpine-3.5
+        - ALPINE_VERSION=3.5
+        - TAG=alpine-$ALPINE_VERSION
       script:
         - ./sh/ci/build.sh
