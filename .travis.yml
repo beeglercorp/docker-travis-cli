@@ -21,7 +21,6 @@ install: true
 
 stages:
   - name: Build
-    if: branch = staging AND type = pull
   - name: Stage Image
     if: branch = staging AND type = push
 
