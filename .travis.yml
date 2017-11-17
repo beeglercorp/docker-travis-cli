@@ -50,6 +50,7 @@ jobs:
 
     - stage: Stage Image
       env:
+        - ALPINE_VERSION=latest
         - DOCKER_PUBLIC_IMAGE_NAME=$DOCKER_STAGE_IMAGE_NAME
         - TAG=latest
       script:
@@ -59,8 +60,9 @@ jobs:
 
     - stage: Stage Image
       env:
+        - ALPINE_VERSION=edge
         - DOCKER_PUBLIC_IMAGE_NAME=$DOCKER_STAGE_IMAGE_NAME
-        - TAG=alpine-edge
+        - TAG=alpine-$ALPINE_VERSION
       script:
         - ./sh/ci/build.sh
         - ./sh/ci/deploy.sh
@@ -68,8 +70,9 @@ jobs:
 
     - stage: Stage Image
       env:
+        - ALPINE_VERSION=3.5
         - DOCKER_PUBLIC_IMAGE_NAME=$DOCKER_STAGE_IMAGE_NAME
-        - TAG=alpine-3.5
+        - TAG=alpine-$ALPINE_VERSION
       script:
         - ./sh/ci/build.sh
         - ./sh/ci/deploy.sh
