@@ -14,4 +14,4 @@ RUN gem install travis -v 1.8.8 --no-rdoc --no-ri
 RUN apk del .build-dependencies
 
 
-ENTRYPOINT [ "travis" ]
+CMD [ "travis" ]
