@@ -20,7 +20,9 @@ else
   EXPECTED_ALPINE_VERSION=$ALPINE_VERSION
 fi
 
+# validate Alpine version
 docker run --rm $DOCKER_IMAGE_NAME \
+  /bin/sh -c \
   VERSION=`cat /etc/alpine-release` \                 # the full version <major>.<minor>.<patch>
   && echo `expr "$VERSION" : '\([0-9]*\.[0-9]*\)'` \  # remove .<patch>, so we're left with <major>.<minor>
   | diff - <(echo "$EXPECTED_ALPINE_VERSION")
