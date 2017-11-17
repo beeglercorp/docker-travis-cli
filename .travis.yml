@@ -56,13 +56,13 @@ jobs:
         - TAG=latest
       script:
         - ./sh/ci/test.sh
-    - stage: Test Pull
+    - stage: Test
       env:
         - DOCKER_PUBLIC_IMAGE_NAME=$DOCKER_TEST_IMAGE
         - TAG=alpine-edge
       script:
         - ./sh/ci/test.sh
-    - stage: Test Pull
+    - stage: Test
       env:
         - DOCKER_PUBLIC_IMAGE_NAME=$DOCKER_TEST_IMAGE
         - TAG=alpine-3.5
